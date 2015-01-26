@@ -30,6 +30,21 @@
                 "mac": "Command+Shift+P"
             },
             "description": "Toggle users pane"
+        },
+        "prev_command": {
+            "suggested_key": {
+                "default": "Ctrl+Up",
+                "mac": "Ctrl+Up"
+            },
+            "description": "Recall a previous command"
+        },
+        "next_command": {
+            "suggested_key": {
+                "default": "Ctrl+Down",
+                "mac": "Ctrl+Down"
+            },
+            "description": "Recall a next command"
         }
+
     }
 }

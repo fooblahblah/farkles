@@ -1,9 +1,16 @@
 $(function() {
     $('head').append('<style>.timelineFocused { left : 0% !important; width : 70% !important; } .incidentsMinimal { left : 70% !important; width : 30% !important; }</style>');
-    toggle_people();
+    username = $('body > header.primary-header > div.user-nav.dropdown-wrapper.dropdown > a').text().trim();
+    chatInput = $('#timeline > header > textarea');
+    chatInput.keypress(function (e) {
+        if (e.which == 13) {
+            curItem = null;
+        }
+    });
+    togglePeople();
 });
 
-toggle_people = function() {
+togglePeople = function() {
     if($("#timeline").hasClass('timelineFocused')) {
         $("#people").show();
         $('#timeline').removeClass('timelineFocused');
@@ -15,17 +22,39 @@ toggle_people = function() {
     }
 }
 
-shrink_incidents = function() {
-    $("#incidents").css({"left" : "70%", "width" : "30%" });
-    $("#timeline").css({"left" : "0%", "width" : "70%" });
+prevCommand = function() {
+    if($('#timeline > header > textarea').is(":focus")) {
+        var myself = '#timeline > div.timeline-container.scrollable.js-timeline-container > ul > li.myself';
+        if(typeof curItem == 'undefined' || curItem == null) {
+            curItem = $(myself).first();
+        } else {
+            curItem = curItem.nextAll(myself).first();
+        }
+
+        console.log(curItem.text());
+        chatInput.val(curItem.find('.what').text());
+    }
+}
+
+nextCommand = function() {
+    if($('#timeline > header > textarea').is(":focus")) {
+        var myself = '#timeline > div.timeline-container.scrollable.js-timeline-container > ul > li.myself';
+        if(typeof curItem != 'undefined' || curItem != null) {
+            curItem = curItem.prevAll(myself).first();
+            console.log(curItem);
+            $(chatInput).val(curItem.find('.what').text());
+        }
+
+    }
 }
 
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        // console.log(sender.tab ?
-        //             "from a content script:" + sender.tab.url :
-        //             "from the extension");
         if (request.cmd == "toggle_people")
-            toggle_people();
+            togglePeople();
+        else if (request.cmd == "prev_command")
+            prevCommand();
+        else if (request.cmd == "next_command")
+            nextCommand();
     });
